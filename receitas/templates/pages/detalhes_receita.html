@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block content %}
+
+
+<h3 style="text-align: center;border-bottom: 6px solid #4dd4;">Receita - {{ receita.titulo }}</h3>
+<div class="container">
+        <div class="row align-items-start">
+        <div class="col">
+            <div>{{ receita.titulo }} - 
+                {% if receita.autor.name != "" %}
+                {{ receita.autor.name }}
+                {% else %}
+                {{ receita.autor.username }}
+                {% endif %}
+            </div>
+            <img class="img-thumbnail" src="{% get_media_prefix %}{{receita.imagem}}"/>
+            <div>{{ receita.descricao|safe }}</div>
+        </div>
+    </div>
+</div>
+<a style="padding: 3% 0;" href="{% url 'core:nova_receita' %}"><button class="btn btn-primary pull-right" style="width: 100%;">Adicione sua Receita!!!!</button></a>
+
+{% endblock content %}

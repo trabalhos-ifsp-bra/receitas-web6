@@ -13,56 +13,65 @@ Projeto Web s6 IFSP
 
 :License: MIT
 
-
-# receitas
+receitas
+========
 
 Learning Django Framework and Python syntax.
 
-## Comandos git
+Comandos git
+------------
 
 **(Se alguem tiver um workflow melhor dá 1 toque.)**
 
-Antes de programar: git pull origin master (atualizar sua branch local)  
-Após modificações, atualize novamente: git stash && git pull origin master (guarda suas mudancas)  
-altere novamente e veja se não tem problemas de merge: git stash pop  
-tudo ok?: git add . && git commit -m"mensagem" && git push origin master  
+| Antes de programar: git pull origin master (atualizar sua branch
+local)
+| Após modificações, atualize novamente: git stash && git pull origin
+master (guarda suas mudancas)
+| altere novamente e veja se não tem problemas de merge: git stash pop
+| tudo ok?: git add . && git commit -m"mensagem" && git push origin
+master
 
+Comandos básicos
+----------------
 
-## Comandos básicos
+Download de Packages: **pip install -r requirements.txt** (Ele irá
+baixar todos os packages necessários)
 
-Download de Packages: **pip install -r requirements.txt** (Ele irá baixar todos os packages necessários)
+Caso você tenha instalado um novo, precisa adicioná-lo a listagem: **pip
+freeze > requirements.txt**
 
-Caso você tenha instalado um novo, precisa adicioná-lo a listagem: **pip freeze > requirements.txt**
+| Rodar servidor: **py manage.py runserver**
+| Fez alterações em models: **py manage.py makemigrations** (Cria um
+histórico da alteracao)
+|  Seguido por: **py manage.py migrate** (realmente faz as alterações)
 
+Criar um usuário administrador: **py manage.py createsuperuser**
 
-Rodar servidor: **py manage.py runserver**  
-Fez alterações em models: **py manage.py makemigrations** (Cria um histórico da alteracao)  
-             Seguido por: **py manage.py migrate** (realmente faz as alterações)  
+Agrupar todos os arquivos estáticos na pasta static: **py manage.py
+collectstatic** (caso algum package que vc baixou deu erro pode ajudar.)
 
-Criar um usuário administrador: **py manage.py createsuperuser**  
+Checklist
+---------
 
-Agrupar todos os arquivos estáticos na pasta static: **py manage.py collectstatic** (caso algum package que vc baixou deu erro pode ajudar.)
-
-## Checklist
-
-- [X] Adicionar receitas – os usuários poderão publicar suas receitas no site
-- [ ] Comentar – os usuários poderão adicionar comentários nas receitas
-publicadas por terceiros.
-- [ ] Avaliações – os usuários poderão avaliar as receitas de terceiros por meio
-de estrelas.
-- [X] Adicionar imagem – os usuários poderão publicar imagem das suas
-receitas e nos comentários.
-- [ ] Editar receitas – os usuários poderão editar receitas (somente as
-próprias).
-- [ ] Excluir receitas – os usuários poderão excluir receitas publicadas
-(somente as próprias).
-- [X] Categorização – separação de receitas por categorias. Ex: salgados,
-doces, assados, fritos, vegetariano.
-- [ ] Favoritos – os usuários poderão ‘favoritar’ as receitas para serem
-guardadas.
-- [X] Responsividade – poderá ser aberto em qualquer dispositivo, sem
-problemas de resolução.
-- [ ] Impressão – os usuários poderão imprimir as receitas.
+-  [X] Adicionar receitas – os usuários poderão publicar suas receitas
+   no site
+-  [ ] Comentar – os usuários poderão adicionar comentários nas receitas
+   publicadas por terceiros.
+-  [ ] Avaliações – os usuários poderão avaliar as receitas de terceiros
+   por meio de estrelas.
+-  [X] Adicionar imagem – os usuários poderão publicar imagem das suas
+   receitas e nos comentários.
+-  [ ] Editar receitas – os usuários poderão editar receitas (somente as
+   próprias).
+-  [ ] Excluir receitas – os usuários poderão excluir receitas
+   publicadas (somente as próprias).
+-  [X] Categorização – separação de receitas por categorias. Ex:
+   salgados, doces, assados, fritos, vegetariano.
+-  [ ] Favoritos – os usuários poderão ‘favoritar’ as receitas para
+   serem guardadas.
+-  [X] Responsividade – poderá ser aberto em qualquer dispositivo, sem
+   problemas de resolução.
+-  [ ] Impressão – os usuários poderão imprimir as receitas.
 
 
 

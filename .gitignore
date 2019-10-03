@@ -152,6 +152,7 @@ typings/
 
 ### VisualStudioCode template
 .vscode/*
+.vscode*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
@@ -279,7 +280,6 @@ pip-selfcheck.json
 
 ### Project template
 
-receitas/media/
 
 .pytest_cache/
 

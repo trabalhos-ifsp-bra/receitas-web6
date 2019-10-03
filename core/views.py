@@ -1,18 +1,24 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.views.decorators.clickjacking import xframe_options_exempt
+from django.shortcuts import render,redirect, get_object_or_404, reverse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import ReceitaForm
-from .models import Receita
+from .models import Receita, Comentario, Categoria
 
 
-def index(request, template_name='pages/home.html'):
-    receitas = Receita.objects.all()
-    context = {'receitas': receitas}
+def index(request, categoria=None, template_name='pages/home.html'):
+    categorias = Categoria.objects.all()
+    if categoria:
+        try:
+            receitas = Receita.objects.filter(categoria__slug__contains=categoria)
+            categoria.remove(categoria)
+        except Exception as e:
+            print("Error")
+    else:
+        receitas = Receita.objects.all()
+    context = {'receitas': receitas, 'categorias': categorias,'selecionada':categoria}
     return render(request, template_name, context)
 
 
-@xframe_options_exempt
 @login_required
 def nova_receita(request, template_name='pages/nova_receita.html'):
 
@@ -26,8 +32,18 @@ def nova_receita(request, template_name='pages/nova_receita.html'):
     context = {'form': ReceitaForm()}
     return render(request, template_name, context)
 
-@xframe_options_exempt
 def detalhes_receita(request, pk=None, template_name='pages/detalhes_receita.html'):
     receita = get_object_or_404(Receita, id=pk)
-    context = {'receita': receita}
+    if request.method == 'POST' and request.user.is_authenticated:
+        try:
+            mensagem = request.POST.get('comentario')
+            Comentario.objects.create(receita=receita, mensagem=mensagem, autor=request.user)
+            messages.success(request, 'Comentário adicionado.')
+            return HttpResponseRedirect(reverse('core:detalhes_receita', kwargs={'pk':pk}))
+        except Exception as e:
+            messages.error(request, message="Erro ao adicionar comentário, tente novamente. %s" % str(e))
+
+    comentarios = Comentario.objects.filter(receita=receita)
+    context = {'receita': receita, 'comentarios':comentarios}
     return render(request, template_name, context)
+

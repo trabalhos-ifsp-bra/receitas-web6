@@ -1,11 +1,19 @@
 from django.db import models
+from django.utils.text import slugify
 from receitas.users.models import User
+
 
 class Categoria(models.Model):
     nome = models.CharField(verbose_name="Nome", max_length=80, unique=True)
-
+    slug = models.CharField(verbose_name="Slug", max_length=80, unique=True)
     def __str__(self):
         return self.nome
+    
+    def save(self, *args, **kwargs):
+        if not self.id:
+            value = self.nome
+            self.slug = slugify(value, allow_unicode=True)
+        return super(Categoria, self).save(*args, **kwargs)
 
 
 class Receita(models.Model):

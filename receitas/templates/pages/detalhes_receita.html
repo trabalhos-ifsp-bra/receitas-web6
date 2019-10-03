@@ -2,24 +2,69 @@
 {% load static i18n %}
 
 {% block content %}
-
-
-<h3 style="text-align: center;border-bottom: 6px solid #4dd4;">Receita - {{ receita.titulo }}</h3>
 <div class="container">
         <div class="row align-items-start">
         <div class="col">
-            <div>{{ receita.titulo }} - 
+            <h3>
+                {{ receita.titulo }} - 
                 {% if receita.autor.name != "" %}
                 {{ receita.autor.name }}
                 {% else %}
                 {{ receita.autor.username }}
                 {% endif %}
-            </div>
+            </h3>
+            {% for cat in receita.categoria.all %}
+            <a href="{% url 'core:index' categoria=cat.slug %}"><button type="button" class="btn btn-outline-info ">{{ cat }}</button></a>
+            {% endfor %}
             <img class="img-thumbnail" src="{% get_media_prefix %}{{receita.imagem}}"/>
             <div>{{ receita.descricao|safe }}</div>
         </div>
     </div>
 </div>
+
+<!-- Comment Area -->
+<div class="row bootstrap snippets">
+    <div class="col-md-12 col-md-offset-2 col-sm-12">
+        <div class="comment-wrapper">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    Comentários.
+                </div>
+                <div class="panel-body">
+                    <form action="{% url 'core:detalhes_receita' pk=receita.id %}" method="POST">
+                    {% csrf_token %}
+                    <textarea class="form-control" name="comentario" placeholder="escreva um comentário..." rows="3"></textarea>
+                    <br>
+                    {% if request.user.is_authenticated %}
+                    <button class="btn btn-info pull-right">Adicionar Comentário</button>
+                    </form>
+                    {% else %}
+                    <div>Faça Login Para Comentar</div>
+                    {% endif %}
+                    <hr>
+                    {% if comentarios %}
+                    {% for  comentario in comentarios %}
+                    <ul class="media-list">
+                        <li class="media">
+                            <div class="media-body">
+                                <strong class="text-success">{{ comentario.autor.username }}</strong>
+                                <p>
+                                    {{ comentario.mensagem }}
+                                </p>
+                            </div>
+                        </li>
+                    </ul>
+                    {% endfor %}
+
+                    {% else %}
+                    <div>Sem comentários, seja o primeiro!!</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Comment Area -->
 <a style="padding: 3% 0;" href="{% url 'core:nova_receita' %}"><button class="btn btn-primary pull-right" style="width: 100%;">Adicione sua Receita!!!!</button></a>
 
 {% endblock content %}

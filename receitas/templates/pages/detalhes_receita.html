@@ -13,6 +13,8 @@
                 {{ receita.autor.username }}
                 {% endif %}
             </h3>
+            <p class="pull-right">Preparo: {{ receita.tempo }}</p>
+
             {% for cat in receita.categoria.all %}
             <a href="{% url 'core:index' categoria=cat.slug %}"><button type="button" class="btn btn-outline-info ">{{ cat }}</button></a>
             {% endfor %}
@@ -43,21 +45,20 @@
                     {% endif %}
                     <hr>
                     {% if comentarios %}
-                    {% for  comentario in comentarios %}
-                    <ul class="media-list">
-                        <li class="media">
-                            <div class="media-body">
-                                <strong class="text-success">{{ comentario.autor.username }}</strong>
-                                <p>
-                                    {{ comentario.mensagem }}
-                                </p>
-                            </div>
-                        </li>
-                    </ul>
-                    {% endfor %}
-
+                        {% for  comentario in comentarios %}
+                        <ul class="media-list">
+                            <li class="media">
+                                <div class="media-body">
+                                    <strong class="text-success">{{ comentario.autor.username }}</strong>
+                                    <p>
+                                        {{ comentario.mensagem }}
+                                    </p>
+                                </div>
+                            </li>
+                        </ul>
+                        {% endfor %}
                     {% else %}
-                    <div>Sem comentários, seja o primeiro!!</div>
+                    <div style="padding: 30px;">Sem comentários, seja o primeiro!!</div>
                     {% endif %}
                 </div>
             </div>

@@ -6,9 +6,6 @@ from .models import Receita
 
 # Create the form class.
 class ReceitaForm(ModelForm):
-    descricao = forms.CharField(required=True, widget=SummernoteWidget(attrs={'width': '50%', 'height': '100%'}))
-
-
     class Meta:
         model = Receita
         fields = ['titulo', 'imagem', 'descricao', 'categoria','tempo']

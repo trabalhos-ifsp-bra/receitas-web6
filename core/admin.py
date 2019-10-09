@@ -1,10 +1,25 @@
 from django.contrib import admin
+from django.db import models
 from .models import Receita, Comentario, Categoria, Favorito
-from django_summernote.admin import SummernoteModelAdmin
+from django import forms
+from django_summernote.widgets import SummernoteWidget
 
+class ReceitaAdmin(admin.ModelAdmin):
+    formfield_overrides = {
+        models.TextField: {'widget': SummernoteWidget(attrs={'width': '50%', 'height': '100%'})},
+    }
+    
+    def get_queryset(self, request):
+        qs = super(ReceitaAdmin, self).get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(autor=request.user)
 
-class ReceitaAdmin(SummernoteModelAdmin):
-    pass
+    def get_form(self, request, obj=None, **kwargs):
+        if not request.user.is_superuser:
+            self.exclude = ("rating", "autor")
+        form = super(ReceitaAdmin, self).get_form(request, obj, **kwargs)
+        return form
 
 class CategoriaAdmin(admin.ModelAdmin):
 

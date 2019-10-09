@@ -4,24 +4,28 @@
 {% block content %}
 <div class="container">
         <div class="row align-items-start">
-        <div class="col">
-            <h3>
-                {{ receita.titulo }} - 
-                {% if receita.autor.name != "" %}
-                {{ receita.autor.name }}
-                {% else %}
-                {{ receita.autor.username }}
+            <div class="col">
+                <div style="display: flex; justify-content: space-between; align-items: center;padding-right: 10%;">
+                    <h3>
+                        {{ receita.titulo }} - 
+                        {% if receita.autor.name != "" %}
+                        {{ receita.autor.name }}
+                        {% else %}
+                        {{ receita.autor.username }}
+                        {% endif %}
+                    </h3>
+                {% if request.user == receita.autor %}
+                    <a class="btn btn-outline-primary" href="{% url 'admin:index' %}core/receita/{{ receita.id }}"> Editar </a>
                 {% endif %}
-            </h3>
-            <p class="pull-right">Preparo: {{ receita.tempo }}</p>
-
-            {% for cat in receita.categoria.all %}
-            <a href="{% url 'core:index' categoria=cat.slug %}"><button type="button" class="btn btn-outline-info ">{{ cat }}</button></a>
-            {% endfor %}
-            <img class="img-thumbnail" src="{% get_media_prefix %}{{receita.imagem}}"/>
-            <div>{{ receita.descricao|safe }}</div>
+                </div>
+                <p class="pull-right">Preparo: {{ receita.tempo }}</p>
+                {% for cat in receita.categoria.all %}
+                <a href="{% url 'core:index' categoria=cat.slug %}"><button type="button" class="btn btn-outline-info ">{{ cat }}</button></a>
+                {% endfor %}
+                <img class="img-thumbnail" style="margin-top: 10px;" src="{% get_media_prefix %}{{receita.imagem}}"/>
+                <div>{{ receita.descricao|safe }}</div>
+            </div>
         </div>
-    </div>
 </div>
 
 <!-- Comment Area -->

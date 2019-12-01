@@ -30,14 +30,23 @@
                 {% endif %}
         {% for receita in receitas %}
         <div class="col-md-6">
-            <div>{{ receita.titulo }} - 
-                {% if receita.autor.name != "" %}
-                {{ receita.autor.name }}
-                {% else %}
-                {{ receita.autor.username }}
-                {% endif %}
-            </div>
-            <p class="pull-right">Preparo: {{ receita.tempo }}</p>
+                <p>
+                    <strong>{{ receita.titulo }}</strong> - 
+                    Autor: 
+                    {% if receita.autor.name != "" %}
+                        {{ receita.autor.name }} {{ receita.autor.lastname }}
+                    {% else %}
+                        {{ receita.autor.username }}
+                    {% endif %}
+                </p>
+                <div style="display: flex;justify-content: space-between;">
+                    <p>
+                        Preparo: <strong>{{ receita.tempo }}</strong>
+                    </p>
+                    <p>
+                    Avaliação Geral: <strong>{{ receita.avaliacao }}</strong>
+                    </p>
+                </div>
             <a href="{% url 'core:detalhes_receita' pk=receita.id  %}">
                     <img class="img-thumbnail" src="{% get_media_prefix %}{{receita.imagem}}"/>
             </a>

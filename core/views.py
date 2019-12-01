@@ -7,12 +7,9 @@ from .models import Receita, Comentario, Categoria
 
 def index(request, categoria=None, template_name='pages/home.html'):
     categorias = Categoria.objects.all()
-    if categoria:
-        try:
-            receitas = Receita.objects.filter(categoria__slug__contains=categoria)
-            categoria.remove(categoria)
-        except Exception as e:
-            print("Error")
+    categoria_escolhida = Categoria.objects.filter(slug=categoria)
+    if len(categoria_escolhida):
+        receitas = Receita.objects.filter(categoria__slug__contains=categoria)
     else:
         receitas = Receita.objects.all()
     context = {'receitas': receitas, 'categorias': categorias,'selecionada':categoria}

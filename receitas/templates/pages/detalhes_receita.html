@@ -6,6 +6,7 @@
         <div class="row align-items-start">
             <div class="col">
                 <div style="display: flex; justify-content: space-between; align-items: center;padding-right: 10%;">
+                <div>
                     <h3>
                         {{ receita.titulo }} - 
                         {% if receita.autor.name != "" %}
@@ -14,11 +15,18 @@
                         {{ receita.autor.username }}
                         {% endif %}
                     </h3>
+                    <div> 
+                        Preparo: <strong>{{ receita.tempo }}</strong> -
+                        Avaliação Geral: <strong>{{ receita.avaliacao }}</strong>
+                    </div>
+                </div>
+                <div>
+
                 {% if request.user == receita.autor %}
                     <a class="btn btn-outline-primary" href="{% url 'admin:index' %}core/receita/{{ receita.id }}"> Editar </a>
                 {% endif %}
                 </div>
-                <p class="pull-right">Preparo: {{ receita.tempo }}</p>
+                </div>
                 {% for cat in receita.categoria.all %}
                 <a href="{% url 'core:index' categoria=cat.slug %}"><button type="button" class="btn btn-outline-info ">{{ cat }}</button></a>
                 {% endfor %}
@@ -73,3 +81,7 @@
 <a style="padding: 3% 0;" href="{% url 'core:nova_receita' %}"><button class="btn btn-primary pull-right" style="width: 100%;">Adicione sua Receita!!!!</button></a>
 
 {% endblock content %}
+<script>
+var URL_AVALIACAO = "{% url 'api.v2.avaliacoes' receita.id %}";
+</script>
+<script src="{{ STATIC_URL }}js/receitas.js }}"></script>

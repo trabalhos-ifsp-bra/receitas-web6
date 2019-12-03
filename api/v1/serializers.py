@@ -10,3 +10,6 @@ class AvaliacaoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Avaliacao
         fields = '__all__'
+        extra_kwargs = {
+            'user' : {'read_only' : True }
+        }

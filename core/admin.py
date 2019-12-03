@@ -34,16 +34,15 @@ class AvaliacaoAdmin(admin.ModelAdmin):
             return qs
         return qs.filter(user=request.user)
 
+    
     def get_form(self, request, obj=None, **kwargs):
         if not request.user.is_superuser:
-            self.exclude = ("user")
+            self.exclude = ('user', )
+            self.readonly_fields=('receita',)
         form = super(AvaliacaoAdmin, self).get_form(request, obj, **kwargs)
         return form
 
-    def save_model(self, request, obj, form, change):
-    # associating the current logged in user to the client_id
-        obj.user = request.user
-        super().save_model(request, obj, form, change)
+
 
 class CategoriaAdmin(admin.ModelAdmin):
 
@@ -69,7 +68,8 @@ class ComentarioAdmin(admin.ModelAdmin):
 
     def get_form(self, request, obj=None, **kwargs):
         if not request.user.is_superuser:
-            self.exclude = ("autor")
+            self.exclude = ('autor', )
+            self.readonly_fields=('receita',)
         form = super(ComentarioAdmin, self).get_form(request, obj, **kwargs)
         return form
 

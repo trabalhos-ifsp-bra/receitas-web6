@@ -9,7 +9,6 @@ app_name = "core"
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('', include('api.urls')),
     path('admin', admin.site.urls, name='admin'),
     path('<str:categoria>', views.index, name='index'),
     path('receitas/nova/', views.nova_receita, name='nova_receita'),

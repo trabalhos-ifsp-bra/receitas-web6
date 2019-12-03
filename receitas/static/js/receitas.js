@@ -1,6 +1,13 @@
 $(document).ready(function() {
+    console.log('loaded');
 
-    $('btn_avaliar').click(function() {
+    
+    $('#btn_avaliar').click(function() {
+        $('#myModal').modal('show');
+
+  
+    })
+    $('#myModal').on('shown.bs.modal', function () {
         /*
         Funcao responsavel por avaliar a receita
         */
@@ -11,6 +18,6 @@ $(document).ready(function() {
             success: function(response) {
 
             }
-        })    
+        })  
     })
 });

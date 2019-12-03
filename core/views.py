@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect, get_object_or_404, reverse, HttpRe
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import ReceitaForm
-from .models import Receita, Comentario, Categoria
+from .models import Receita, Comentario, Categoria, Avaliacao
 
 
 def index(request, categoria=None, template_name='pages/home.html'):
@@ -40,7 +40,14 @@ def detalhes_receita(request, pk=None, template_name='pages/detalhes_receita.htm
         except Exception as e:
             messages.error(request, message="Erro ao adicionar comentário, tente novamente. %s" % str(e))
 
+    if request.user:
+        try:
+            nota_user = Avaliacao.objects.filter(user=request.user, receita=receita).first()
+        except Avaliacao.DoesNotExist:
+            nota_user = None
+    else:
+        nota_user = None
     comentarios = Comentario.objects.filter(receita=receita)
-    context = {'receita': receita, 'comentarios':comentarios}
+    context = {'receita': receita, 'comentarios':comentarios, 'nota_user': nota_user}
     return render(request, template_name, context)
 

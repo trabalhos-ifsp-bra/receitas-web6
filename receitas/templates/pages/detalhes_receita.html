@@ -16,19 +16,21 @@
                         {% endif %}
                     </h3>
                     <div> 
-                        Preparo: <strong>{{ receita.tempo }}</strong> -
-                        Avaliação Geral: <strong>{{ receita.avaliacao }}</strong>
+                    Preparo: <strong>{{ receita.tempo }}</strong> 
+                    Avaliação Geral: <strong>{{ receita.avaliacao }}</strong>
                     </div>
                 </div>
                 <div>
-
+                {% if request.user %}
+                <a class="btn btn-outline-primary" style="cursor:pointer;" id="btn_avaliar" data-toggle="modal" data-target="#exampleModal"> Avaliar </a>
+                {% endif %}
                 {% if request.user == receita.autor %}
                     <a class="btn btn-outline-primary" href="{% url 'admin:index' %}core/receita/{{ receita.id }}"> Editar </a>
                 {% endif %}
                 </div>
                 </div>
                 {% for cat in receita.categoria.all %}
-                <a href="{% url 'core:index' categoria=cat.slug %}"><button type="button" class="btn btn-outline-info ">{{ cat }}</button></a>
+                <a href="{% url 'core:index' categoria=cat.slug %}"><button type="button" class="btn btn-outline-info">{{ cat }}</button></a>
                 {% endfor %}
                 <img class="img-thumbnail" style="margin-top: 10px;" src="{% get_media_prefix %}{{receita.imagem}}"/>
                 <div>{{ receita.descricao|safe }}</div>
@@ -80,8 +82,87 @@
 <!-- End Comment Area -->
 <a style="padding: 3% 0;" href="{% url 'core:nova_receita' %}"><button class="btn btn-primary pull-right" style="width: 100%;">Adicione sua Receita!!!!</button></a>
 
+<!-- Modal Area -->
+<div id='myModal' class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Modal title</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" style="text-align: center;">
+        {% if nota_user %}
+        <p>Caso queira alterar sua nota clique em Enviar.</p>
+        <input id="valor_nota" value={{ nota_user.rating }}  min="1" max="5" type="number" onkeyup="if(this.value > 5) this.value = null;this.value=this.value.replace(/[^\d]/,'');"/>
+        {% else %}
+        <p>De uma nota de 1 a 5 para a receita!</p>
+          <input id="valor_nota" value='1'  min="1" max="5" type="number" onkeyup="if(this.value > 5) this.value = null;this.value=this.value.replace(/[^\d]/,'');"/>
+        {% endif %}
+        </div>
+        <div class="modal-footer">
+          <button id="enviar_nota" type="button" class="btn btn-primary">Enviar</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+</div>
+<!-- End Modal Area -->
 {% endblock content %}
+{% block extra_js %}
 <script>
-var URL_AVALIACAO = "{% url 'api.v2.avaliacoes' receita.id %}";
+$(document).ready(function() {
+    var URL_AVALIACAO = "{{ request.get_host }}" + '/ws/v1/avaliacoes/';
+    var RECEITA_ID = "{{ receita.id  }}";
+    var RATING_NOTA = "{{ nota_user.rating }}"
+    var ID_NOTA = "{{ nota_user.id }}"
+    
+    $('#btn_avaliar').click(function() {
+        $('#myModal').modal('show');
+    })
+    $('#myModal').on('shown.bs.modal', function () {
+
+       $('#enviar_nota').on('click', function(){
+        /*
+        Funcao responsavel por avaliar a receita
+        */
+        var valor_nota = $('#valor_nota').val();
+        var data = JSON.stringify({
+            'receita': '{{ receita.id }}',
+            'rating': valor_nota
+        });
+        var url = 'http://' + URL_AVALIACAO;
+        if(ID_NOTA){
+            type = 'PATCH';
+            data.id = ID_NOTA;
+            url += ID_NOTA + '/';
+        }else {
+            type = 'POST';
+        }
+        console.log(data, type, url);
+        $.ajax(
+            {
+                type: type,
+                url: url,
+                contentType: 'application/json',
+                dataType: "json",
+                data: data,
+                beforeSend: function (xhr, settings) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                },
+                success: function(response) {
+                console.log(response);
+                $('#myModal').modal('hide');
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                console.log(xhr, textStatus, errorThrown);
+                }
+            }
+        );
+       })
+    })
+});
 </script>
-<script src="{{ STATIC_URL }}js/receitas.js }}"></script>
+
+{% endblock extra_js %}

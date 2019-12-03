@@ -66,3 +66,6 @@ class Avaliacao(models.Model):
     receita = models.ForeignKey(Receita, on_delete=models.CASCADE)
     rating = models.IntegerField(default=1, choices=RATING_CHOICES)
     user = models.ForeignKey(settings.AUTH_USER_MODEL,                                                                       on_delete=models.CASCADE)
+
+    def __str__(self):
+        return '{} Avaliou {} - {}'.format(self.user.username, self.receita.titulo, str(self.rating))

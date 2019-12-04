@@ -1,8 +1,9 @@
 """
 Base settings to build other settings files upon.
 """
-
+import os
 import environ
+
 
 ROOT_DIR = (
     environ.Path(__file__) - 3
@@ -48,8 +49,12 @@ LOCALE_PATHS = [ROOT_DIR.path("locale")]
 # DATABASES["default"]["ATOMIC_REQUESTS"] = True
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': str(ROOT_DIR('database.sqlite3')),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ.get('DB_NAME'),
+        'PASSWORD': os.environ.get('DB_PASS'),
+        'USER': os.environ.get('DB_USER'),
+        'HOST': 'db',
+        'PORT': '5432',
     }
 }
 # URLS

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <ul class="list-group"></ul>
+        {% for favorito in favoritos %}
+        <li style="display: flex; justify-content: space-between; align-items: center; width: 50%; "class="list-group-item">
+            <p >{{ favorito.receita.titulo }} - {{ favorito.receita.avaliacao }}</p>
+            <a class="btn btn-outline-primary" style="cursor:pointer;" id="btn_remover" data-id={{ favorito.id }}> Remover </a>
+        </li>
+        {% endfor %}
+    </ul>
+{% endblock content %}
+
+
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    var URL_AVALIACAO = "http://{{ request.get_host }}" + '/ws/v1/favoritos/';
+
+
+
+    $(document).on('click', '#btn_remover', function(e){
+    e.preventDefault();
+    var el = $(this);
+    favorite_id = el.attr('data-id');
+    $.ajax(
+            {
+                type: 'DELETE',
+                url: URL_AVALIACAO + favorite_id + '/',
+                contentType: 'application/json',
+                dataType: "json",
+                data: {},
+                beforeSend: function (xhr, settings) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                },
+                success: function(response) {
+                    el.closest('li').remove();
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                console.log(xhr, textStatus, errorThrown);
+                }
+            }
+    );
+});
+
+});
+</script>
+{% endblock extra_js %}

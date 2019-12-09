@@ -30,21 +30,23 @@
                 {% endif %}
         {% for receita in receitas %}
         <div class="col-md-6">
+            <div style="display: flex;justify-content: space-between;">
                 <p>
                     <strong>{{ receita.titulo }}</strong> - 
-                    Autor: 
+                    por 
                     {% if receita.autor.name != "" %}
                         {{ receita.autor.name }} {{ receita.autor.lastname }}
                     {% else %}
                         {{ receita.autor.username }}
                     {% endif %}
                 </p>
+            </div>
                 <div style="display: flex;justify-content: space-between;">
                     <p>
                         Preparo: <strong>{{ receita.tempo }}</strong>
                     </p>
                     <p>
-                    Avaliação Geral: <strong>{{ receita.avaliacao }}</strong>
+                    Avaliação: <strong>{{ receita.avaliacao }}</strong>
                     </p>
                 </div>
             <a href="{% url 'core:detalhes_receita' pk=receita.id  %}">

@@ -2,8 +2,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
-from core.models import Avaliacao
-from .serializers import AvaliacaoSerializer
+from core.models import Avaliacao, Favorito
+from .serializers import AvaliacaoSerializer, FavoritoSerializer
 
 class AvaliacaoViewSet(ModelViewSet):
     '''
@@ -19,6 +19,22 @@ class AvaliacaoViewSet(ModelViewSet):
         if id_receita:
             queryset = queryset.filter(receita_id=id_receita)
 
+        return queryset
+
+    def perform_create(self, serializer):
+        instance = serializer.save(user=self.request.user)
+
+class FavoritoViewSet(ModelViewSet):
+    '''
+    ModelViewSet para Favorito
+    '''
+    serializer_class = FavoritoSerializer
+    queryset = Favorito.objects.all()
+
+    def get_queryset(self):
+        queryset = super(FavoritoViewSet, self).get_queryset()
+        if self.request.user:
+            queryset = queryset.filter(user=self.request.user)
         return queryset
 
     def perform_create(self, serializer):

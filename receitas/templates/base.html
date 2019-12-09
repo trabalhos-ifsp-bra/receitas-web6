@@ -18,15 +18,14 @@
     {% block css %}
     
     <!-- Latest compiled and minified Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"/>
     <script type="text/javascript" src="{% static 'js/jquery-3.3.1.min.js' %}" crossorigin="anonymous"></script>
     <!-- Your stuff: Third-party CSS libraries go here -->
     
     <!-- This file stores project-specific CSS -->
     
     <link href="{% static 'css/project.css' %}" rel="stylesheet">
-    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" rel="stylesheet">
     
     {% endblock %}
 
@@ -46,10 +45,10 @@
             <li class="nav-item active">
               <a class="nav-link" href="{% url 'core:index' %}">Home <span class="sr-only">(current)</span></a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'about' %}">Sobre</a>
-            </li>
             {% if request.user.is_authenticated %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'core:favoritos' %}">{% trans "Favoritos" %}</a>
+              </li>
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'admin:index' %}">{% trans "Minhas interações" %}</a>
               </li>

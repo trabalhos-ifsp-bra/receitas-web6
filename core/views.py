@@ -2,10 +2,11 @@ from django.shortcuts import render,redirect, get_object_or_404, reverse, HttpRe
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import ReceitaForm
-from .models import Receita, Comentario, Categoria, Avaliacao
+from .models import Receita, Comentario, Categoria, Avaliacao, Favorito
 
 
 def index(request, categoria=None, template_name='pages/home.html'):
+
     categorias = Categoria.objects.all()
     categoria_escolhida = Categoria.objects.filter(slug=categoria)
     if len(categoria_escolhida):
@@ -13,6 +14,7 @@ def index(request, categoria=None, template_name='pages/home.html'):
     else:
         receitas = Receita.objects.all()
     context = {'receitas': receitas, 'categorias': categorias,'selecionada':categoria}
+
     return render(request, template_name, context)
 
 
@@ -29,7 +31,7 @@ def nova_receita(request, template_name='pages/nova_receita.html'):
     context = {'form': ReceitaForm()}
     return render(request, template_name, context)
 
-def detalhes_receita(request, pk=None, template_name='pages/detalhes_receita.html'):
+def detalhes_receita(request, pk=None, fav=None, template_name='pages/detalhes_receita.html'):
     receita = get_object_or_404(Receita, id=pk)
     if request.method == 'POST' and request.user.is_authenticated:
         try:
@@ -39,15 +41,41 @@ def detalhes_receita(request, pk=None, template_name='pages/detalhes_receita.htm
             return HttpResponseRedirect(reverse('core:detalhes_receita', kwargs={'pk':pk}))
         except Exception as e:
             messages.error(request, message="Erro ao adicionar comentário, tente novamente. %s" % str(e))
+    
 
-    if request.user:
-        try:
-            nota_user = Avaliacao.objects.filter(user=request.user, receita=receita).first()
-        except Avaliacao.DoesNotExist:
-            nota_user = None
-    else:
-        nota_user = None
+
     comentarios = Comentario.objects.filter(receita=receita)
-    context = {'receita': receita, 'comentarios':comentarios, 'nota_user': nota_user}
+    context = {'receita': receita, 'comentarios':comentarios }
+
+    if request.user.is_authenticated:
+        if fav:
+            try:
+                if fav == 'adicionar':
+                    Favorito.objects.get_or_create(user=request.user, receita=receita)
+                    messages.success(request, 'Adicionado aos favoritos.')
+                elif fav == 'remover':
+                    Favorito.objects.get(user=request.user, receita__id=pk).delete()
+                    messages.success(request, 'Removido dos favoritos.')
+            except Favorito.DoesNotExist:
+                pass
+            return HttpResponseRedirect(reverse('core:detalhes_receita', kwargs={'pk':pk}))
+        
+        try:
+            context['nota_user'] = Avaliacao.objects.filter(user=request.user, receita=receita).first()
+        except Avaliacao.DoesNotExist:
+            context['nota_user'] = None
+
+        try:
+            context['favorito'] = Favorito.objects.filter(user=request.user, receita=receita).first()
+        except Favorito.DoesNotExist:
+            context['favorito'] = None
+
     return render(request, template_name, context)
 
+@login_required
+def favoritos(request, template_name='pages/favoritos.html'):
+
+    favoritos = Favorito.objects.filter(user=request.user)
+    context = {'favoritos': favoritos}
+
+    return render(request, template_name, context)

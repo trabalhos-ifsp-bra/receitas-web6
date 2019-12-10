@@ -23,4 +23,6 @@ ENV DB_NAME receitasdb
 ENV DB_PASS faltatompero
 ENV DB_USER chef
 
+RUN python manage.py initgroups
+
 COPY . /code/

@@ -1,5 +1,19 @@
 /* These styles are generated from project.scss. */
 
+.print_recipe {
+  display: none;
+}
+@media print {
+  .remove-print {
+    display: none;
+  }
+  .alert.alert-success {
+    display: none;
+  }
+  .print_recipe {
+    display: block;
+  }
+}
 .alert-debug {
   color: black;
   background-color: white;

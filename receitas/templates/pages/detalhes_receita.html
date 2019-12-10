@@ -3,51 +3,55 @@
 
 {% block content %}
 <div class="container">
-        <div class="row align-items-start">
-            <div class="col">
-                <div style="display: flex; justify-content: space-between; align-items: center;padding-right: 10%;">
+    <div class="row align-items-start">
+        <div class="col">
+            <div style="display: flex; justify-content: space-between;  align-items: center;padding-right: 10%;">
+                <div>
+                    <h3>
+                        {{ receita.titulo }} - 
+                        {% if receita.autor.name != "" %}
+                        {{ receita.autor.name }}
+                        {% else %}
+                        {{ receita.autor.username }}
+                        {% endif %}
+                    </h3>
                     <div>
-                        <h3>
-                            {{ receita.titulo }} - 
-                            {% if receita.autor.name != "" %}
-                            {{ receita.autor.name }}
-                            {% else %}
-                            {{ receita.autor.username }}
-                            {% endif %}
-                        </h3>
-                        <div>
-                        Preparo: <strong>{{ receita.tempo }}</strong> 
-                        Avaliação: <strong>{{ receita.avaliacao }}</strong>
-                    </div>
+                    Preparo: <strong>{{ receita.tempo }}</strong> 
+                    Avaliação: <strong>{{ receita.avaliacao }}</strong>
                 </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; width: 20%;">
-                    {% if favorito %}
-                    <a label="Favoritar" class="favorite fa fa-star" style="cursor:pointer;font-size: 30px; text-align: center; color:#007bff;" href="{% url 'core:favoritar' pk=receita.id fav='remover' %}" action="post">
-                    </a>
-                    {% else %}
-                    <a label="Favoritar" class="favorite far fa-star" style="cursor:pointer;font-size: 30px; text-align: center; color:#007bff;" href="{% if request.user.is_authenticated %}{% url 'core:favoritar' pk=receita.id fav='adicionar' %}
-                    {% else %}{% url 'account_login' %} {% endif %}">
-                    </a> 
-                    {% endif %}
-                    {% if request.user %}
-                        <a class="btn btn-outline-primary" style="cursor:pointer;" id="btn_avaliar" data-toggle="modal" data-target="#exampleModal"> Avaliar </a>
-                    {% endif %}
-                    {% if request.user == receita.autor %}
-                        <a class="btn btn-outline-primary" href="{% url 'admin:index' %}core/receita/{{ receita.id }}"> Editar </a>
-                    {% endif %}
-                </div>
-                </div>
-                {% for cat in receita.categoria.all %}
-                <a href="{% url 'core:index' categoria=cat.slug %}"><button type="button" class="btn btn-outline-info">{{ cat }}</button></a>
-                {% endfor %}
-                <img class="img-thumbnail" style="margin-top: 10px; width: 100%;" src="{% get_media_prefix %}{{receita.imagem}}"/>
-                <div>{{ receita.descricao|safe }}</div>
             </div>
+            <div class="remove-print" style="display: flex; justify-content: space-between; align-items: center; width: 25%;">
+                <i class="fas fa-print" onclick="print()" style="cursor:pointer;font-size: 30px; text-align: center; color:#007bff;"></i>
+                {% if favorito %}
+                <a label="Favoritar" class="favorite fa fa-star" style="cursor:pointer;font-size: 30px; text-align: center; color:#007bff;" href="{% url 'core:favoritar' pk=receita.id fav='remover' %}" action="post">
+                </a>
+                {% else %}
+                <a label="Favoritar" class="favorite far fa-star" style="cursor:pointer;font-size: 30px; text-align: center; color:#007bff;" href="{% if request.user.is_authenticated %}{% url 'core:favoritar' pk=receita.id fav='adicionar' %}
+                {% else %}{% url 'account_login' %} {% endif %}">
+                </a> 
+                {% endif %}
+                {% if request.user %}
+                    <a class="btn btn-outline-primary" style="cursor:pointer;" id="btn_avaliar" data-toggle="modal" data-target="#exampleModal"> Avaliar </a>
+                {% endif %}
+                {% if request.user == receita.autor %}
+                    <a class="btn btn-outline-primary" href="{% url 'admin:index' %}core/receita/{{ receita.id }}"> Editar </a>
+                {% endif %}
+            </div>
+            </div>
+            <div>
+                    {% for cat in receita.categoria.all %}
+                    <a href="{% url 'core:index' categoria=cat.slug %}"><button type="button" class="btn btn-outline-info">{{ cat }}</button></a>
+                    {% endfor %}
+            </div>
+            <img class="img-thumbnail" style="margin: 1% 8%; width: 70%; height:40%;" src="{% get_media_prefix %}{{receita.imagem}}"/>
+            <div>{{ receita.descricao|safe }}</div>
+
         </div>
+    </div>
 </div>
 
 <!-- Comment Area -->
-<div class="row bootstrap snippets">
+<div class="row bootstrap snippets remove-print">
     <div class="col-md-12 col-md-offset-2 col-sm-12">
         <div class="comment-wrapper">
             <div class="panel panel-info">
@@ -67,18 +71,23 @@
                     {% endif %}
                     <hr>
                     {% if comentarios %}
-                        {% for  comentario in comentarios %}
                         <ul class="media-list">
-                            <li class="media">
-                                <div class="media-body">
-                                    <strong class="text-success">{{ comentario.autor.username }}</strong>
-                                    <p>
-                                        {{ comentario.mensagem }}
-                                    </p>
-                                </div>
-                            </li>
+                            {% for  comentario in comentarios %}
+                                <li class="media">
+                                    <div class="media-body">
+                                        <strong class="text-success">{{ comentario.autor.username }}</strong>
+                                        <div style="display: flex; justify-content: space-between;">
+                                            <p>
+                                                {{ comentario.mensagem }}
+                                            </p>
+                                            {% if request.user == comentario.autor %}
+                                            <a class="btn btn-outline-primary" style="cursor:pointer;" id="btn_remover" data-id={{ comentario.id }}> Remover </a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endfor %}
                         </ul>
-                        {% endfor %}
                     {% else %}
                     <div style="padding: 30px;">Sem comentários, seja o primeiro!!</div>
                     {% endif %}
@@ -88,7 +97,9 @@
     </div>
 </div>
 <!-- End Comment Area -->
-<a style="padding: 3% 0;" href="{% url 'core:nova_receita' %}"><button class="btn btn-primary pull-right" style="width: 100%;">Adicione sua Receita!!!!</button></a>
+
+<!-- End Area -->
+<a style="padding: 3% 0;" href="{% url 'core:nova_receita' %}"><button class="btn btn-primary pull-right remove-print" style="width: 100%;">Adicione sua Receita!!!!</button></a>
 
 <!-- Modal Area -->
 <div id='myModal' class="modal" tabindex="-1" role="dialog">
@@ -122,6 +133,7 @@
 <script>
 $(document).ready(function() {
     var URL_AVALIACAO = "{{ request.get_host }}" + '/ws/v1/avaliacoes/';
+    var URL_COMENTARIO = "{{ request.get_host }}" + '/ws/v1/comentarios/';
     var RECEITA_ID = "{{ receita.id  }}";
     var RATING_NOTA = "{{ nota_user.rating }}"
     var ID_NOTA = "{{ nota_user.id }}"
@@ -130,6 +142,7 @@ $(document).ready(function() {
     $('#btn_avaliar').click(function() {
         $('#myModal').modal('show');
     })
+
     $('#myModal').on('shown.bs.modal', function () {
 
        $('#enviar_nota').on('click', function(){
@@ -149,7 +162,6 @@ $(document).ready(function() {
         }else {
             type = 'POST';
         }
-        console.log(data, type, url);
         $.ajax(
             {
                 type: type,
@@ -169,11 +181,33 @@ $(document).ready(function() {
                 }
             }
         );
-       })
+    });
     });
 
-
-
+    $(document).on('click', '#btn_remover', function(e){
+        e.preventDefault();
+        var el = $(this);
+        comentario_id = el.attr('data-id');
+        url = 'http://' + URL_COMENTARIO + comentario_id + '/';
+        $.ajax(
+                {
+                    type: 'DELETE',
+                    url: url,
+                    contentType: 'application/json',
+                    dataType: "json",
+                    data: {},
+                    beforeSend: function (xhr, settings) {
+                        xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                    },
+                    success: function(response) {
+                        el.closest('li').remove();
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                    console.log(xhr, textStatus, errorThrown);
+                    }
+                }
+        );
+    })
 });
 </script>
 

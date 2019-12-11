@@ -49,7 +49,7 @@ LOCALE_PATHS = [ROOT_DIR.path("locale")]
 # DATABASES["default"]["ATOMIC_REQUESTS"] = True
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django_postgrespool2',
         'NAME': os.environ.get('DB_NAME'),
         'PASSWORD': os.environ.get('DB_PASS'),
         'USER': os.environ.get('DB_USER'),
@@ -57,6 +57,22 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+
+
+# DATABASE POOL
+# ---------------------------------------------------------------------------
+# max_overflow – The maximum overflow size of the pool.
+#                This is not the maximum size of the pool.
+# pool_size    – The minimum number of connections to maintain in the pool.
+DATABASE_POOL_CLASS = 'sqlalchemy.pool.QueuePool'
+
+DATABASE_POOL_ARGS = {
+    'max_overflow': 10,
+    'pool_size': 5,
+    'recycle': 300
+}
+
+
 # URLS
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#root-urlconf
